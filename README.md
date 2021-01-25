@@ -7,17 +7,13 @@ Abstract: In this study, we analyze for the first time newly available engagemen
 
 
 Instructions:
-
 (1) Load the full directory
-
 (2) Open RStudio and make sure the environment in RStudio is empty. Then load the R files into RStudio and run each file.
 
 There are four directories:
 
 (1) code: In the code directory there lies two R files that produce important figures and tables in the main document and the supplementary methods and materials:
-
 (1.1) Figures_Tables_in_Paper.R: Produces figures for the main paper.
-
 (1.2) Figures_Tables_in_Supplementary_Materials.R: Produces figures and tables for the supplementary materials and methods.
 
 (2) data: All the data needed to produce the figures and tables in the paper are located in this directory.
