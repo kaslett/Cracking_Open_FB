@@ -10,6 +10,8 @@ Instructions:
 
 (1) Load the full directory
 
+(2) Download two files (All_Data_Age_Bracket.tsv,All_Data_Ideology.tsv) from the following google drive folder and move them to the data directory: https://drive.google.com/drive/u/0/folders/1n5peQFMDhwro4vQuv2uVBlvoJcebMcAG
+
 (2) Open RStudio and make sure the environment in RStudio is empty. Then load the R files into RStudio and run each file.
 
 There are four directories:
@@ -25,5 +27,9 @@ There are four directories:
 (3) figures: All the figures produced by the two R files in the code directory are located here.
 
 (4) tables: All the tables (in .txt files) produced by the two R files in the code directory are located here.
+
+
+
+
 
 
