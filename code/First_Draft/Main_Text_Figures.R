@@ -1,11 +1,3 @@
-
-
-########################################################################################################################################################
-### Title: Cracking Open the News Feed: Exploring What U.S. Facebook Users See and Share with Large-Scale Platform Data
-### Authors: Andrew M. Guess, Kevin Aslett, Jonathan Nagler, Richard Bonneaua, and Joshua A. Tucker
-### Purpose of code: Produce figures and tables that are displayed in the main text of the paper.
-
-
 #Load in necessary libraries:
 library(dplyr)
 library(data.table)
@@ -22,14 +14,7 @@ nrows_to_std <- function(nrows,sigma) {
 
 #Set working directory
 #Place here the working directory for where you place the folder:
-master_directory = "/Users/kevinaslett/Documents/"
-#This location file should not change:
-location_data = 'Cracking_Open_The_News_Feed/data/'
-location_data_2 = 'Cracking_Open_The_News_Feed/figures/'
-data_directory = paste0(master_directory,location_data)
-setwd(data_directory)
-figure_directory = paste0(master_directory,location_data_2)
-
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/data")
 
 #Load in data for URLs with just age brackets:
 Age_Data <- as.data.frame(fread('All_Data_Age_Bracket.tsv')) 
@@ -97,11 +82,9 @@ Ideo_source$rating_our_score <- ifelse(Ideo_source$rating_our_score == 'l','Libe
 Ideo_Data <- merge(Data_Ideology,Ideo_source,by.x='parent_domain',by.y='domain')
 
 
-########################################    FIGURES     #######################################################
-
 #Figure 1: News URL Shares by Source Credibility. 95% confidence intervals are displayed.
 
-Monthly_Data <- Data_Ideology %>% group_by(Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Age_Data %>% group_by(Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
 Monthly_Data <- Monthly_Data %>% group_by(Credible) %>% mutate(Total_agg_nrows = sum(agg_nrows))
 Monthly_Data <- Monthly_Data %>% select(Credible,Total_Shares,Total_agg_nrows)
 Monthly_Data <- unique(Monthly_Data)
@@ -112,6 +95,7 @@ Monthly_Data <- na.omit(Monthly_Data)
 Monthly_Data$Type <- as.factor(Monthly_Data$Type)
 Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Low-Quality',
                                                          'Credible'))
+
 
 
 Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
@@ -125,11 +109,13 @@ Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 #Proportion of shares that are from low-quality news:
 Monthly_Data$Total_Shares[1]/(Monthly_Data$Total_Shares[2]+Monthly_Data$Total_Shares[1])
 
+
+
 ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) + 
   geom_bar(stat='identity',width=.6) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
-  scale_y_continuous(breaks=c(00,200,400,600,800,1000),limits = c(0,1000)) +
+  scale_y_continuous(breaks=c(00,200,400,600,800,1000,1200),limits = c(0,1200)) +
   ylab('Total Shares (In Millions)\n') +
   xlab('\nCredibility of News') +
   theme_bw() +
@@ -145,17 +131,16 @@ ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
-ggsave("Shares_Less_Low_Quality.png",width=12)
 
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("Shares_Less_Low_Quality.png",width=12)
 
 
 
 
 #Figure 2: News URL Views by Source Credibility. 95% confidence intervals are displayed.
 
-Monthly_Data <- Data_Ideology %>% group_by(Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_views)))
+Monthly_Data <- Age_Data %>% group_by(Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_views)))
 Monthly_Data <- Monthly_Data %>% group_by(Credible) %>% mutate(Total_agg_nrows = sum(agg_nrows))
 Monthly_Data <- Monthly_Data %>% select(Credible,Total_Shares,Total_agg_nrows)
 Monthly_Data <- unique(Monthly_Data)
@@ -179,12 +164,11 @@ Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 #Proportion of views that are from low-quality news:
 Monthly_Data$Total_Shares[1]/(Monthly_Data$Total_Shares[2]+Monthly_Data$Total_Shares[1])
 
-
 ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) + 
   geom_bar(stat='identity',width=.6) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
-  scale_y_continuous(breaks=c(00,30,60,90,120),limits = c(0,120)) +
+  scale_y_continuous(breaks=c(00,40,80,120,160,200),limits = c(0,200)) +
   ylab('Total Views (In Billions)\n') +
   xlab('\nCredibility of News') +
   theme_bw() +
@@ -200,8 +184,7 @@ ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
 ggsave("Views_Less_Low_Quality.png",width=12)
 
 
@@ -275,8 +258,7 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
 ggsave("Shares_By_Ideology_Less_Low_Quality.png",width=12)
 
 
@@ -353,9 +335,8 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
 ggsave("Views_By_Ideology_Less_Low_Quality.png",width=12)
+
 
 
 
@@ -413,9 +394,9 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
 ggsave("LQ_Shares_By_Ideology_By_Ideology.png",width=12)
+
+
 
 
 #Figure 6: Low-Quality News URL Views by User Ideology and News Slant. 95\% confidence intervals are displayed.
@@ -472,12 +453,16 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+
 ggsave("LQ_Views_By_Ideology_By_Ideology.png",width=12)
 
 
-#Figure 7: News URL Shares by Age Group. 95% confidence intervals are displayed.
+
+
+
+
+############################################## Figure 7 ###########################################
+
 
 
 Monthly_Data <- Age_Data %>% group_by(age_bracket,Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
@@ -514,7 +499,7 @@ Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 old_data <- Monthly_Data %>% filter(age_bracket == '65+')
 old_data$Total_Shares[1]/(old_data$Total_Shares[1]+old_data$Total_Shares[2])
 #18-24:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
+young_data <- Monthly_Data %>% filter(age_bracket == '25-34')
 young_data$Total_Shares[1]/(young_data$Total_Shares[1]+young_data$Total_Shares[2])
 
 ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) + 
@@ -523,7 +508,7 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
                 position=position_dodge(.9)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
-  scale_y_continuous(breaks=c(50,150,250),limits = c(0,250)) +
+  scale_y_continuous(breaks=c(100,200,300),limits = c(0,300)) +
   ylab('Total Shares (In Millions)\n') +
   xlab('\nAge Brackets') +
   theme_bw() +
@@ -539,80 +524,14 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
-ggsave("Shares_By_Age_Less_Low_Quality.png",width=12)
-
-
-#Figure 8: News URL Views by Age Group. 95% confidence intervals are displayed.
-
-Monthly_Data <- Age_Data %>% group_by(age_bracket,Credible) %>% mutate(Total_Views = sum(as.numeric(tot_views)))
-Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Credible) %>% mutate(Total_agg_nrows = sum(agg_nrows))
-Monthly_Data <- Monthly_Data %>% select(age_bracket,Credible,Total_Views,Total_agg_nrows)
-Monthly_Data <- unique(Monthly_Data)
-
-Monthly_Data$String_1 <- ifelse(Monthly_Data$Credible == 1,'Credible','Low-Quality')
-Monthly_Data$Type <- Monthly_Data$String_1
-
-Monthly_Data <- na.omit(Monthly_Data)
-
-Monthly_Data$Type <- as.factor(Monthly_Data$Type)
-
-Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Low-Quality',
-                                                         'Credible'))
-
-
-Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
-
-Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
-
-Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
-
-
-Monthly_Data$Total_Views <- Monthly_Data$Total_Views/1000000000
-
-
-Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000000)*2)
-Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Views + conf_int)
-Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Views - conf_int)
-
-#65+:
-old_data <- Monthly_Data %>% filter(age_bracket == '65+')
-old_data$Total_Views[1]/(old_data$Total_Views[1]+old_data$Total_Views[2])
-#18-24:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
-young_data$Total_Views[1]/(young_data$Total_Views[1]+young_data$Total_Views[2])
-
-
-ggplot(Monthly_Data, aes(x=Numbers, y=Total_Views, fill=Type)) + 
-  geom_bar(stat='identity', position=position_dodge()) +
-  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
-                position=position_dodge(.9)) +
-  scale_x_continuous(breaks=c(1:6),
-                     labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
-  scale_y_continuous(breaks=c(10,20,30),limits = c(0,30)) +
-  ylab('Total Views (In Billions)\n') +
-  xlab('\nAge Brackets') +
-  theme_bw() +
-  theme(panel.border = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
-        axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
-        axis.text.y  = element_text(size=12),
-        title =element_text(size=14, face='bold'),
-        legend.justification = c(1, 0),
-        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
-
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
-ggsave("Views_By_Age_Less_Low_Quality.png",width=12)
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("fig_3_jqd_updated.png",width=12)
 
 
 
-#Figure 9: News URL Shares by Ideology and Age Group. 95% confidence intervals are displayed.
+
+
+#Figure 8: News URL Shares by Ideology and Age Group. 95% confidence intervals are displayed.
 Monthly_Data <- Data_Ideology %>% group_by(age_bracket,political_page_affinity,Credible) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
 Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Credible,political_page_affinity) %>% mutate(Total_agg_nrows = sum(agg_nrows))
 Monthly_Data <- Monthly_Data %>% select(age_bracket,political_page_affinity,Credible,Total_Shares,Total_agg_nrows)
@@ -685,58 +604,116 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+
 ggsave("Shares_By_Age_Ideology_Credibility_Less.png",width=12)
 
 
-#Create Data for Table 1:
-
-#Create URL Data
-URL_Data <- Age_Data %>% 
-  ungroup() %>% 
-  select(url_rid,
-         Political,
-         Clickbait,
-         Credible)
-
-URL_Data <- unique(URL_Data)
-
-
-Cred_Click_Pol = nrow(URL_Data %>% filter(Credible == 1 & Clickbait == 1 & Political == 1))
-Cred_Click_NPol = nrow(URL_Data %>% filter(Credible == 1 & Clickbait == 1 & Political == 0))
-Cred_NClick_Pol = nrow(URL_Data %>% filter(Credible == 1 & Clickbait == 0 & Political == 1))
-Cred_NClick_NPol = nrow(URL_Data %>% filter(Credible == 1 & Clickbait == 0 & Political == 0))
-
-
-LQ_Click_Pol = nrow(URL_Data %>% filter(Credible == 0 & Clickbait == 1 & Political == 1))
-LQ_Click_NPol = nrow(URL_Data %>% filter(Credible == 0 & Clickbait == 1 & Political == 0))
-LQ_NClick_Pol = nrow(URL_Data %>% filter(Credible == 0 & Clickbait == 0 & Political == 1))
-LQ_NClick_NPol = nrow(URL_Data %>% filter(Credible == 0 & Clickbait == 0 & Political == 0))
-
-
-matrix(c('Yes','Yes',paste(round((Cred_Click_Pol/(Cred_Click_Pol+Cred_Click_NPol+Cred_NClick_Pol+Cred_NClick_NPol))*100,1),' %'),
-  'Yes','No',paste0(round((Cred_Click_NPol/(Cred_Click_Pol+Cred_Click_NPol+Cred_NClick_Pol+Cred_NClick_NPol))*100,1),' %'),
-  'No','Yes',paste0(round((Cred_NClick_Pol/(Cred_Click_Pol+Cred_Click_NPol+Cred_NClick_Pol+Cred_NClick_NPol))*100,1),' %'),
-  'No','No',paste0(round((Cred_NClick_NPol/(Cred_Click_Pol+Cred_Click_NPol+Cred_NClick_Pol+Cred_NClick_NPol))*100,1),' %'),
-  'Yes','Yes',paste0(round((LQ_Click_Pol/(LQ_Click_Pol+LQ_Click_NPol+LQ_NClick_Pol+LQ_NClick_NPol))*100,1),' %'),
-  'Yes','No',paste0(round((LQ_Click_NPol/(LQ_Click_Pol+LQ_Click_NPol+LQ_NClick_Pol+LQ_NClick_NPol))*100,1),' %'),
-  'No','Yes',paste0(round((LQ_NClick_Pol/(LQ_Click_Pol+LQ_Click_NPol+LQ_NClick_Pol+LQ_NClick_NPol))*100,1),' %'),
-  'No','No',paste0(round((LQ_NClick_NPol/(LQ_Click_Pol+LQ_Click_NPol+LQ_NClick_Pol+LQ_NClick_NPol))*100,1),' %')),ncol=3,byrow=T)
+############################################## Figure 9 ###########################################
 
 
 
-
-
-
-#Figure 10: News URL Shares by Age Category and Clickbait. 95% confidence intervals are displayed.
-
-Monthly_Data <- Age_Data %>% group_by(age_bracket,Clickbait) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
-Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait) %>% mutate(Total_agg_nrows = sum(agg_nrows))
-Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait,Total_Shares,Total_agg_nrows)
+Monthly_Data <- Age_Data %>% group_by(age_bracket,Credible) %>% mutate(Total_Views = sum(as.numeric(tot_views)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Credible) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Credible,Total_Views,Total_agg_nrows)
 Monthly_Data <- unique(Monthly_Data)
 
-Monthly_Data$String_1 <- ifelse(Monthly_Data$Clickbait == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Credible == 1,'Credible','Low-Quality')
+Monthly_Data$Type <- Monthly_Data$String_1
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- as.factor(Monthly_Data$Type)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Low-Quality',
+                                                         'Credible'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+
+
+Monthly_Data$Total_Views <- Monthly_Data$Total_Views/1000000000
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Views + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Views - conf_int)
+
+#65+:
+old_data <- Monthly_Data %>% filter(age_bracket == '65+')
+old_data$Total_Views[1]/(old_data$Total_Views[1]+old_data$Total_Views[2])
+#18-24:
+young_data <- Monthly_Data %>% filter(age_bracket == '25-34')
+young_data$Total_Views[1]/(young_data$Total_Views[1]+young_data$Total_Views[2])
+
+
+ggplot(Monthly_Data, aes(x=Numbers, y=Total_Views, fill=Type)) + 
+  geom_bar(stat='identity', position=position_dodge()) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
+                position=position_dodge(.9)) +
+  scale_x_continuous(breaks=c(1:6),
+                     labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
+  scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
+  ylab('Total Views (In Billions)\n') +
+  xlab('\nAge Brackets') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x = element_text(size=14),
+        axis.text.x  = element_text(size=12),
+        axis.title.y = element_text(size=14),
+        axis.text.y  = element_text(size=12),
+        title =element_text(size=14, face='bold'),
+        legend.justification = c(1, 0),
+        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("fig_4_jqd_updated.png",width=12)
+
+
+
+
+
+
+
+
+
+
+
+############################################## Figure 10 ###########################################
+
+#100 Simulations randomly replacing clickbait data
+
+Rated_Clickbait <- c(rep(1,123),rep(0,145))
+Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+Test_Data <- Age_Data %>% select(url_rid,Clickbait)
+Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+
+Test_Data <- Test_Data %>% arrange(Clickbait)
+
+total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+total_click=sum(Test_Data$Clickbait)
+
+sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+
+Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+
+Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+
+New_Age_Data <- merge(Age_Data,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Total_Shares,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
 Monthly_Data$Type <- Monthly_Data$String_1
 
 Monthly_Data <- na.omit(Monthly_Data)
@@ -762,15 +739,91 @@ Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
 
+Monthly_Data$iter_num <- 1
+
+All_Monthly_Data <- Monthly_Data
+
+for(i in 2:100){
+Rated_Clickbait <- c(rep(1,123),rep(0,145))
+Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+Test_Data <- Age_Data %>% select(url_rid,Clickbait)
+Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+
+Test_Data <- Test_Data %>% arrange(Clickbait)
+
+total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+total_click=sum(Test_Data$Clickbait)
+
+sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+
+Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+
+Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+
+New_Age_Data <- merge(Age_Data,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Total_Shares,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$Type <- Monthly_Data$String_1
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- as.factor(Monthly_Data$Type)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Clickbait',
+                                                         'Non-Clickbait'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+
+Monthly_Data$iter_num <- i
+
+All_Monthly_Data <- rbind(All_Monthly_Data,Monthly_Data)
+}
+
+
+Avg_F_10 <- All_Monthly_Data
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(Mean_Shares = mean(Total_Shares))
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(upper = quantile(Total_Shares, .975))
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(lower = quantile(Total_Shares, .025))
+Avg_F_10 <- Avg_F_10 %>% select(age_bracket,Type,Mean_Shares,lower,upper)
+Avg_F_10 <- unique(Avg_F_10)
+
+Avg_F_10$age_bracket <- factor(Avg_F_10$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Avg_F_10$Numbers <- as.numeric(Avg_F_10$age_bracket)
+
+
+
 #65+:
-old_data <- Monthly_Data %>% filter(age_bracket == '65+')
-old_data$Total_Shares[1]/(old_data$Total_Shares[1]+old_data$Total_Shares[2])
+old_data <- Avg_F_10 %>% filter(age_bracket == '65+')
+old_data$Mean_Shares[1]/(old_data$Mean_Shares[1]+old_data$Mean_Shares[2])
 #18-24:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
-young_data$Total_Shares[1]/(young_data$Total_Shares[1]+young_data$Total_Shares[2])
+young_data <- Avg_F_10 %>% filter(age_bracket == '25-34')
+young_data$Mean_Shares[1]/(young_data$Mean_Shares[1]+young_data$Mean_Shares[2])
 
 
-ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) + 
+
+
+ggplot(Avg_F_10, aes(x=Numbers, y=Mean_Shares, fill=Type)) + 
   geom_bar(stat='identity', position=position_dodge()) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
@@ -792,11 +845,13 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
 ggsave("Shares_By_Age_Less_Clickbait.png",width=12)
 
-#Figure 11: News URL Shares by Age Category and Political Topic. 95% confidence intervals are displayed.
+
+
+############################################## Figure 11 ###########################################
+
 
 Monthly_Data <- Age_Data %>% group_by(age_bracket,Political) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
 Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Political) %>% mutate(Total_agg_nrows = sum(agg_nrows))
@@ -828,13 +883,13 @@ Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrow
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
-
 #65+:
 old_data <- Monthly_Data %>% filter(age_bracket == '65+')
 old_data$Total_Shares[1]/(old_data$Total_Shares[1]+old_data$Total_Shares[2])
 #18-24:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
+young_data <- Monthly_Data %>% filter(age_bracket == '25-34')
 young_data$Total_Shares[1]/(young_data$Total_Shares[1]+young_data$Total_Shares[2])
+
 
 
 
@@ -844,7 +899,7 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
                 position=position_dodge(.9)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
-  scale_y_continuous(breaks=c(50,150,250),limits = c(0,250)) +
+  scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
   ylab('Total Shares (In Millions)\n') +
   xlab('\nAge Brackets') +
   theme_bw() +
@@ -860,20 +915,41 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
         legend.justification = c(1, 0),
         strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
 ggsave("Shares_By_Age_Less_Political.png",width=12)
 
-#Figure 12: News URL Shares from Low-Quality News Domains. 95% confidence intervals are displayed.
 
-Monthly_Data <- Age_Data %>% filter(Credible == 0)
-Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait,Political) %>% mutate(Total_Views = sum(as.numeric(tot_shares)))
-Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait,Political) %>% mutate(Total_agg_nrows = sum(agg_nrows))
-Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait,Political,Total_Views,Total_agg_nrows)
+############################################## Figure 12 ###########################################
+
+
+Rated_Clickbait <- c(rep(1,123),rep(0,145))
+Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+Test_Data <- Age_Data %>% select(url_rid,Clickbait)
+Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+
+Test_Data <- Test_Data %>% arrange(Clickbait)
+
+total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+total_click=sum(Test_Data$Clickbait)
+
+sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+
+Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+
+Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+
+New_Age_Data <- merge(Age_Data,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% filter(Credible == 0)
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2,Political) %>% mutate(Total_Views = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2,Political) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Political,Total_Views,Total_agg_nrows)
 Monthly_Data <- unique(Monthly_Data)
 
 Monthly_Data$String_1 <- ifelse(Monthly_Data$Political == 1,'Political ','Non-Political ')
-Monthly_Data$String_2 <- ifelse(Monthly_Data$Clickbait == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$String_2 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
 Monthly_Data$Type <- paste0(Monthly_Data$String_1,Monthly_Data$String_2)
 
 Monthly_Data <- na.omit(Monthly_Data)
@@ -899,34 +975,109 @@ Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Non-Political Clickbai
 Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Views + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Views - conf_int)
+Monthly_Data$iter_num <- 1
+
+All_Monthly_Data_3 <- Monthly_Data
 
 
+for(i in 2:20){
+  Rated_Clickbait <- c(rep(1,123),rep(0,145))
+  Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+  Test_Data <- Age_Data %>% select(url_rid,Clickbait)
+  Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+  
+  Test_Data <- Test_Data %>% arrange(Clickbait)
+  
+  total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+  total_click=sum(Test_Data$Clickbait)
+  
+  sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+  sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+  
+  Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+  
+  Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+  
+  New_Age_Data <- merge(Age_Data,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% filter(Credible == 0)
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2,Political) %>% mutate(Total_Views = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2,Political) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Political,Total_Views,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Political == 1,'Political ','Non-Political ')
+Monthly_Data$String_2 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$Type <- paste0(Monthly_Data$String_1,Monthly_Data$String_2)
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type, levels = c('Political Non-Clickbait',
+                                                          'Political Clickbait',
+                                                          'Non-Political Non-Clickbait',
+                                                          'Non-Political Clickbait'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+Monthly_Data$Total_Views <- Monthly_Data$Total_Views/1000000
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Non-Political Clickbait',
+                                                         'Non-Political Non-Clickbait',
+                                                         'Political Clickbait',
+                                                         'Political Non-Clickbait'))
+
+
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Views + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Views - conf_int)
+Monthly_Data$iter_num <- i
+
+All_Monthly_Data_3 <- rbind(All_Monthly_Data_3,Monthly_Data)
+print(i)
+}
+
+Avg_F_12 <- All_Monthly_Data_3
+Avg_F_12 <- Avg_F_12 %>% group_by(age_bracket,Type) %>% mutate(Mean_Views = mean(Total_Views))
+Avg_F_12 <- Avg_F_12 %>% group_by(age_bracket,Type) %>% mutate(upper = quantile(Total_Views, .975))
+Avg_F_12 <- Avg_F_12 %>% group_by(age_bracket,Type) %>% mutate(lower = quantile(Total_Views, .025))
+Avg_F_12 <- Avg_F_12 %>% select(age_bracket,Type,Mean_Views,lower,upper)
+Avg_F_12 <- unique(Avg_F_12)
+
+Avg_F_12$age_bracket <- factor(Avg_F_12$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Avg_F_12$Numbers <- as.numeric(Avg_F_12$age_bracket)
 
 
 
 #65+ Political proportion:
-old_data <- Monthly_Data %>% filter(age_bracket == '65+')
-(old_data$Total_Views[1]+old_data$Total_Views[3])/(sum(old_data$Total_Views))
+old_data <- Avg_F_12 %>% filter(age_bracket == '65+')
+(old_data$Mean_Views[2]+old_data$Mean_Views[4])/(sum(old_data$Mean_Views))
 #18-24 Political proportion:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
-(young_data$Total_Views[1]+young_data$Total_Views[2])/(sum(young_data$Total_Views))
+young_data <- Avg_F_12 %>% filter(age_bracket == '25-34')
+(young_data$Mean_Views[2]+young_data$Mean_Views[4])/(sum(young_data$Mean_Views))
 
 #65+ Clickbait proportion:
-old_data <- Monthly_Data %>% filter(age_bracket == '65+')
-(old_data$Total_Views[3]+old_data$Total_Views[4])/(sum(old_data$Total_Views))
+old_data <- Avg_F_12 %>% filter(age_bracket == '65+')
+(old_data$Mean_Views[3]+old_data$Mean_Views[2])/(sum(old_data$Mean_Views))
 #18-24 Clickbait proportion:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
-(young_data$Total_Views[2]+young_data$Total_Views[4])/(sum(young_data$Total_Views))
+young_data <- Avg_F_12 %>% filter(age_bracket == '25-34')
+(young_data$Mean_Views[2]+young_data$Mean_Views[3])/(sum(young_data$Mean_Views))
 
 #65+ Clickbait proportion:
-old_data <- Monthly_Data %>% filter(age_bracket == '65+')
-(old_data$Total_Views[1])/(sum(old_data$Total_Views))
+old_data <- Avg_F_12 %>% filter(age_bracket == '65+')
+(old_data$Mean_Views[4])/(sum(old_data$Mean_Views))
 #18-24 Clickbait proportion:
-young_data <- Monthly_Data %>% filter(age_bracket == '18-24')
-(young_data$Total_Views[1])/(sum(young_data$Total_Views))
+young_data <- Avg_F_12 %>% filter(age_bracket == '25-34')
+(young_data$Mean_Views[4])/(sum(young_data$Mean_Views))
 
 
-ggplot(Monthly_Data, aes(x = Numbers, y = Total_Views, fill=Type)) + 
+
+
+
+ggplot(Avg_F_12, aes(x = Numbers, y = Mean_Views, fill=Type)) + 
   geom_bar(stat='identity', position=position_dodge()) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +  
@@ -947,13 +1098,367 @@ ggplot(Monthly_Data, aes(x = Numbers, y = Total_Views, fill=Type)) +
         title =element_text(size=14, face='bold'),
         legend.text = element_text(size=14))
 
-figure_directory = paste0(master_directory,location_data_2)
-setwd(figure_directory)
-ggsave("Shares_By_Age_Clickbait_Political_LQ.png",width=12)
 
 
 
 
+#Figure 13:
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+png(file="Histogram.png",
+    width=600, height=350)
+hist(NG_Rating$Score,col='grey')
+dev.off()
+
+#Figure 14: All News URLS Views by Ideology of User.  95 percent confidence intervals aredisplayed.
+
+
+LQ_Ideo_Data <- Ideo_Data %>% filter(Credible == 1) 
+LQ_Ideo_Data <- LQ_Ideo_Data %>% filter(rating_our_score != 'Unclear') 
+Monthly_Data <- LQ_Ideo_Data %>% group_by(political_page_affinity,rating_our_score) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(political_page_affinity,rating_our_score) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(political_page_affinity,Total_Shares,Total_agg_nrows,rating_our_score)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
+
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == -2, 'Very Lib.','Moderate')
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == -1, 'Lib.',Monthly_Data$Ideology)
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == 1, 'Cons.',Monthly_Data$Ideology)
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == 2, 'Very Cons.',Monthly_Data$Ideology)
+
+
+Monthly_Data$Ideology <- as.factor(Monthly_Data$Ideology)
+
+Monthly_Data$Ideology <- factor(Monthly_Data$Ideology,levels=c('Very Lib.',
+                                                               'Lib.',
+                                                               'Moderate',
+                                                               'Cons.',
+                                                               'Very Cons.'))
 
 
 
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+
+
+ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) + 
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
+                position=position_dodge(.9)) +
+  scale_y_continuous(breaks=c(0,50,100,150),limits = c(-0.5,160)) +
+  facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
+  ylab('Total Shares (In Millions)\n') +
+  xlab('\nIdeology of User') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x = element_text(size=14),
+        axis.text.x  = element_text(size=10),
+        axis.title.y = element_text(size=14),
+        axis.text.y  = element_text(size=10),
+        title =element_text(size=14, face='bold'),
+        legend.position = c(1, 0),
+        legend.justification = c(1, 0),
+        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("Credible_Shares_By_Ideology_By_Ideology.png",width=12)
+
+
+
+#Figure 15: All News URLS Views by Ideology of User.  95 percent confidence intervals aredisplayed.
+
+
+LQ_Ideo_Data <- Ideo_Data %>% filter(Credible == 1) 
+LQ_Ideo_Data <- LQ_Ideo_Data %>% filter(rating_our_score != 'Unclear') 
+Monthly_Data <- LQ_Ideo_Data %>% group_by(political_page_affinity,rating_our_score) %>% mutate(Total_Shares = sum(as.numeric(tot_views)))
+Monthly_Data <- Monthly_Data %>% group_by(political_page_affinity,rating_our_score) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(political_page_affinity,Total_Shares,Total_agg_nrows,rating_our_score)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000000
+
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == -2, 'Very Lib.','Moderate')
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == -1, 'Lib.',Monthly_Data$Ideology)
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == 1, 'Cons.',Monthly_Data$Ideology)
+Monthly_Data$Ideology <- ifelse(Monthly_Data$political_page_affinity == 2, 'Very Cons.',Monthly_Data$Ideology)
+
+
+Monthly_Data$Ideology <- as.factor(Monthly_Data$Ideology)
+
+Monthly_Data$Ideology <- factor(Monthly_Data$Ideology,levels=c('Very Lib.',
+                                                               'Lib.',
+                                                               'Moderate',
+                                                               'Cons.',
+                                                               'Very Cons.'))
+
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+
+
+ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) + 
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
+                position=position_dodge(.9)) +
+  scale_y_continuous(breaks=c(0,5,10,15,20),limits = c(-0.1,20)) +
+  facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
+  ylab('Total Views (In Billions)\n') +
+  xlab('\nIdeology of User') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x = element_text(size=14),
+        axis.text.x  = element_text(size=10),
+        axis.title.y = element_text(size=14),
+        axis.text.y  = element_text(size=10),
+        title =element_text(size=14, face='bold'),
+        legend.position = c(1, 0),
+        legend.justification = c(1, 0),
+        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("Credible_Views_By_Ideology_By_Ideology.png",width=12)
+
+
+
+############################## Figure 16 #######################################
+
+
+Age_Data_LQ <- Age_Data %>% filter(Credible == 0)
+
+#100 Simulations randomly replacing clickbait data
+
+Rated_Clickbait <- c(rep(1,123),rep(0,145))
+Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+Test_Data <- Age_Data_LQ %>% select(url_rid,Clickbait)
+Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+
+Test_Data <- Test_Data %>% arrange(Clickbait)
+
+total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+total_click=sum(Test_Data$Clickbait)
+
+sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+
+Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+
+Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+
+New_Age_Data <- merge(Age_Data_LQ,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Total_Shares,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$Type <- Monthly_Data$String_1
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- as.factor(Monthly_Data$Type)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Clickbait',
+                                                         'Non-Clickbait'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+
+Monthly_Data$iter_num <- 1
+
+All_Monthly_Data <- Monthly_Data
+
+for(i in 2:100){
+Rated_Clickbait <- c(rep(1,123),rep(0,145))
+Rated_Not_Clickbait <- c(rep(1,111),rep(0,621))
+Test_Data <- Age_Data_LQ %>% select(url_rid,Clickbait)
+Test_Data <- Test_Data[!duplicated(Test_Data$url_rid),]
+
+Test_Data <- Test_Data %>% arrange(Clickbait)
+
+total_not_click=nrow(Test_Data)-sum(Test_Data$Clickbait)
+total_click=sum(Test_Data$Clickbait)
+
+sample_nc <- sample(Rated_Not_Clickbait,total_not_click,replace=T)
+sample_c <- sample(Rated_Clickbait,total_click,replace=T)
+
+Test_Data$Clickbait_2 <- c(sample_nc,sample_c)
+
+Test_Data <- Test_Data %>% select(url_rid,Clickbait_2)
+
+New_Age_Data <- merge(Age_Data_LQ,Test_Data,by='url_rid')
+
+Monthly_Data <- New_Age_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Clickbait_2) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Clickbait_2,Total_Shares,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Clickbait_2 == 1,'Clickbait','Non-Clickbait')
+Monthly_Data$Type <- Monthly_Data$String_1
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- as.factor(Monthly_Data$Type)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Clickbait',
+                                                         'Non-Clickbait'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+
+Monthly_Data$iter_num <- i
+
+All_Monthly_Data <- rbind(All_Monthly_Data,Monthly_Data)
+}
+
+
+Avg_F_10 <- All_Monthly_Data
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(Mean_Shares = mean(Total_Shares))
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(upper = quantile(Total_Shares, .975))
+Avg_F_10 <- Avg_F_10 %>% group_by(age_bracket,Type) %>% mutate(lower = quantile(Total_Shares, .025))
+Avg_F_10 <- Avg_F_10 %>% select(age_bracket,Type,Mean_Shares,lower,upper)
+Avg_F_10 <- unique(Avg_F_10)
+
+Avg_F_10$age_bracket <- factor(Avg_F_10$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Avg_F_10$Numbers <- as.numeric(Avg_F_10$age_bracket)
+
+#65+:
+old_data <- Avg_F_10 %>% filter(age_bracket == '65+')
+old_data$Mean_Shares[1]/(old_data$Mean_Shares[1]+old_data$Mean_Shares[2])
+#18-24:
+young_data <- Avg_F_10 %>% filter(age_bracket == '25-34')
+young_data$Mean_Shares[1]/(young_data$Mean_Shares[1]+young_data$Mean_Shares[2])
+
+ggplot(Avg_F_10, aes(x=Numbers, y=Mean_Shares, fill=Type)) + 
+  geom_bar(stat='identity', position=position_dodge()) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
+                position=position_dodge(.9)) +
+  scale_x_continuous(breaks=c(1:6),
+                     labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
+  scale_y_continuous(breaks=c(0,20,40,60),limits = c(0,60)) +
+  ylab('Total Shares (In Millions)\n') +
+  xlab('\nAge Brackets') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x = element_text(size=14),
+        axis.text.x  = element_text(size=12),
+        axis.title.y = element_text(size=14),
+        axis.text.y  = element_text(size=12),
+        title =element_text(size=14, face='bold'),
+        legend.justification = c(1, 0),
+        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("Shares_By_Age_Less_Clickbait_LQ.png",width=12)
+
+
+
+########################### Figure 17 ###############################################
+
+
+Monthly_Data <- Age_Data_LQ %>% group_by(age_bracket,Political) %>% mutate(Total_Shares = sum(as.numeric(tot_shares)))
+Monthly_Data <- Monthly_Data %>% group_by(age_bracket,Political) %>% mutate(Total_agg_nrows = sum(agg_nrows))
+Monthly_Data <- Monthly_Data %>% select(age_bracket,Political,Total_Shares,Total_agg_nrows)
+Monthly_Data <- unique(Monthly_Data)
+
+Monthly_Data$String_1 <- ifelse(Monthly_Data$Political == 1,'Political','Non-Political')
+Monthly_Data$Type <- Monthly_Data$String_1
+
+Monthly_Data <- na.omit(Monthly_Data)
+
+Monthly_Data$Type <- as.factor(Monthly_Data$Type)
+
+Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Political',
+                                                         'Non-Political'))
+
+
+Monthly_Data$age_bracket <- as.character(Monthly_Data$age_bracket)
+
+Monthly_Data$age_bracket <- factor(Monthly_Data$age_bracket, levels=c("18-24","25-34","35-44","45-54","55-64","65+"), ordered=TRUE)
+
+Monthly_Data$Numbers <- as.numeric(Monthly_Data$age_bracket)
+
+
+Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000
+
+
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
+Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
+
+#65+:
+old_data <- Monthly_Data %>% filter(age_bracket == '65+')
+old_data$Total_Shares[1]/(old_data$Total_Shares[1]+old_data$Total_Shares[2])
+#18-24:
+young_data <- Monthly_Data %>% filter(age_bracket == '25-34')
+young_data$Total_Shares[1]/(young_data$Total_Shares[1]+young_data$Total_Shares[2])
+
+
+
+
+ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) + 
+  geom_bar(stat='identity', position=position_dodge()) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
+                position=position_dodge(.9)) +
+  scale_x_continuous(breaks=c(1:6),
+                     labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
+  scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
+  ylab('Total Shares (In Millions)\n') +
+  xlab('\nAge Brackets') +
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.title.x = element_text(size=14),
+        axis.text.x  = element_text(size=12),
+        axis.title.y = element_text(size=14),
+        axis.text.y  = element_text(size=12),
+        title =element_text(size=14, face='bold'),
+        legend.justification = c(1, 0),
+        strip.text.x = element_text(size = 12, color = "blue", face = "bold"))
+
+setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/figures")
+ggsave("Shares_By_Age_Less_Political_LQ.png",width=12)

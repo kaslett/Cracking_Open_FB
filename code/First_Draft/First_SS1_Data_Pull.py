@@ -1,27 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Author: Kevin Aslett
-Goal of Code: Produce view and share data for URLs from news domains with a NewsGuard ranking each month
-
-INPUT: 
-(1) NewsGuard_Ratings.csv
-
-OUTPUT:
-(1) NewsG_VIEWS_AGE_PPA_Jan_2018.tsv
-(2) NewsG_VIEWS_AGE_PPA_Feb_2018.tsv
-(3) NewsG_VIEWS_AGE_PPA_Mar_2018.tsv
-(4) NewsG_VIEWS_AGE_PPA_Apr_2018.tsv
-(5) NewsG_VIEWS_AGE_PPA_May_2018.tsv
-(6) NewsG_VIEWS_AGE_PPA_Jun_2018.tsv
-(7) NewsG_VIEWS_AGE_PPA_Jul_2018.tsv
-(8) NewsG_VIEWS_AGE_PPA_Aug_2018.tsv
-(9) NewsG_VIEWS_AGE_PPA_Sep_2018.tsv
-(10) NewsG_VIEWS_AGE_PPA_Oct_2018.tsv
-(11) NewsG_VIEWS_AGE_PPA_Nov_2018.tsv
-(12) NewsG_VIEWS_AGE_PPA_Dec_2018.tsv
-
-"""
+#First_SS1_Data_Pull
 
 #Import the libraries we need to use:
 import pandas as pd
@@ -48,7 +25,6 @@ for i in target_domains:
     num = num + 1
 print("Target Domains:", len(target_domains))
 target_domains_sql = ",".join(["'%s'" % tld for tld in target_domains])
-
 
 
 #Set the list of first post time so we can pull by month across 2018:
