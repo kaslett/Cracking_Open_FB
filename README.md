@@ -28,7 +28,11 @@ Note: Due to privacy resrictions we cannot make the data publicly available, but
 
 (1) Second_SS1_Data_Pull.py: Pulls the data from Social Science One dataset for the second draft
 		
-(2) Second_Draft_Create_Age_Bracket_Data.py: Creates data aggregated by age bracket for each URL ID for the main paper		(3) Second_Draft_Create_Age_Ideology_Data.py: Creates data aggregated by age bracket and policy page affinity for each URL ID for the second draft		(4)Second_Draft_Figures.R: Produces figures for the second paper.
+(2) Second_Draft_Create_Age_Bracket_Data.py: Creates data aggregated by age bracket for each URL ID for the main paper
+
+(3) Second_Draft_Create_Age_Ideology_Data.py: Creates data aggregated by age bracket and policy page affinity for each URL ID for the second draft
+
+(4) Second_Draft_Figures.R: Produces figures for the second paper.
 
 #### (2) figures: All the figures produced by the two R files in the code directory are located here.
 

@@ -142,7 +142,7 @@ WHERE
         err = e
 
 
-#If the data pull for August and September time out then we split the data:
+#If the data pull for August and September times out then we split the data:
 
 
 Create a list of news domains with which we have NewsGuard Ratings. We will only pull data from news domains that have a NewsGuard rating
