@@ -169,7 +169,7 @@ ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(00,40,80,120,160,200),limits = c(0,200)) +
-  ylab('Total Views (In Billions)\n') +
+  ylab('Total Shares (In Billions)\n') +
   xlab('\nCredibility of News') +
   theme_bw() +
   theme(panel.border = element_blank(),
