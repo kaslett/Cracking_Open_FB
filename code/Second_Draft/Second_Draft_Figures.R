@@ -17,7 +17,7 @@ nrows_to_std <- function(nrows,sigma) {
 setwd("/home/jovyan/New_Clean/Cracking_Open_Analysis/data")
 
 #Load in data for URLs with just age brackets:
-Age_Data <- as.data.frame(fread('All_Data_Age_Bracket.tsv')) 
+Age_Data <- as.data.frame(fread('All_Data_Age_Bracket_2.tsv')) 
 
 #Create a maximum number of rows aggregated for each month the URL was first posted:
 Age_Data <- Age_Data %>% mutate(agg_nrows = 285)
@@ -35,7 +35,7 @@ Age_Data <- Age_Data %>% mutate(agg_nrows = ifelse(Month == 'December',120,agg_n
 
 
 #Load in data for URLs with just age brackets and ideology:
-Data_Ideology <- as.data.frame(fread('All_Data_Ideology_2.tsv')) 
+Data_Ideology <- as.data.frame(fread('All_Data_Ideology.tsv')) 
 
 #Create a maximum number of rows aggregated for each month the URL was first posted:
 Data_Ideology <- Data_Ideology %>% mutate(agg_nrows = 57)
@@ -117,16 +117,16 @@ ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(00,200,400,600,800,1000,1200),limits = c(0,1200)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nCredibility of News') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Credibility of News') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -157,7 +157,7 @@ Monthly_Data$Type <- factor(Monthly_Data$Type,levels = c('Low-Quality',
 Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000000
 
 #Create confidence intervals:
-Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000000)*2)
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
@@ -170,16 +170,16 @@ ggplot(Monthly_Data, aes(x=Type, y=Total_Shares,fill=Type)) +
   geom_errorbar(aes(ymin=lower, ymax=upper), width=.4,
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(00,40,80,120,160,200),limits = c(0,200)) +
-  ylab('Total Shares (In Billions)\n') +
-  xlab('\nCredibility of News') +
+  ylab('Total Views (In Billions)') +
+  xlab('Credibility of News') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -243,16 +243,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:5),
                      labels=c('Very Liberal','Liberal','Moderate','Conservative','Very Conservative')) +
   scale_y_continuous(breaks=c(50,150,250),limits = c(0,250)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -297,7 +297,7 @@ Monthly_Data$Numbers <- as.numeric(Monthly_Data$Ideology)
 Monthly_Data$Total_Shares <- Monthly_Data$Total_Shares/1000000000
 
 
-Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000000)*2)
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
@@ -320,16 +320,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:5),
                      labels=c('Very Liberal','Liberal','Moderate','Conservative','Very Conservative')) +
   scale_y_continuous(breaks=c(5,15,25,35),limits = c(0,35)) +
-  ylab('Total Views (In Billions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Views (In Billions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -370,7 +370,7 @@ Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrow
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
-
+Monthly_Data <- Monthly_Data %>% filter(!is.na(political_page_affinity))
 
 ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) + 
   geom_bar(stat='identity') +
@@ -378,16 +378,16 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(0,5,10,15,20),limits = c(-0.5,20)) +
   facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=10),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=10),
         title =element_text(size=14, face='bold'),
         legend.position = c(1, 0),
@@ -425,11 +425,11 @@ Monthly_Data$Ideology <- factor(Monthly_Data$Ideology,levels=c('Very Lib.',
 
 
 
-Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000)*2)
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
-
+Monthly_Data <- Monthly_Data %>% filter(!is.na(political_page_affinity))
 
 ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) + 
   geom_bar(stat='identity') +
@@ -437,16 +437,16 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(0,500,1000,1500),limits = c(0,1500)) +
   facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
-  ylab('Total Views (In Millions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Views (In Millions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=10),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=10),
         title =element_text(size=14, face='bold'),
         legend.position = c(1, 0),
@@ -509,16 +509,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(100,200,300),limits = c(0,300)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -588,16 +588,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(0,25,50,75),limits = c(0,75)) +
   facet_wrap( ~ Ideology, ncol=3,scales = "free") +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=10),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=10),
         title =element_text(size=14, face='bold'),
         legend.position = c(1, 0),
@@ -657,16 +657,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Views, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
-  ylab('Total Views (In Billions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Views (In Billions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -821,16 +821,16 @@ ggplot(Avg_F_10, aes(x=Numbers, y=Mean_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(50,150,250),limits = c(0,250)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -890,17 +890,17 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
                 position=position_dodge(.9)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
-  scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  scale_y_continuous(breaks=c(50,150,250),limits = c(0,260)) +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -1075,16 +1075,16 @@ ggplot(Avg_F_12, aes(x = Numbers, y = Mean_Views, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+"), expand = c(0, 0)) +
   scale_y_continuous(breaks=c(0,10,20,30),limits = c(0,30)) +
-  ylab('Total Shares (In Millions) \n') +
-  xlab('\n Age Brackets') +
+  ylab('Total Shares (In Millions) ') +
+  xlab(' Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.text = element_text(size=14))
@@ -1141,16 +1141,16 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(0,50,100,150),limits = c(-0.5,160)) +
   facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=10),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=10),
         title =element_text(size=14, face='bold'),
         legend.position = c(1, 0),
@@ -1190,7 +1190,7 @@ Monthly_Data$Ideology <- factor(Monthly_Data$Ideology,levels=c('Very Lib.',
 
 
 
-Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,14))/1000000000)*2)
+Monthly_Data <- Monthly_Data %>% mutate(conf_int = ((nrows_to_std(Total_agg_nrows,2228))/1000000000)*2)
 Monthly_Data <- Monthly_Data %>% mutate(upper = Total_Shares + conf_int)
 Monthly_Data <- Monthly_Data %>% mutate(lower = Total_Shares - conf_int)
 
@@ -1202,16 +1202,16 @@ ggplot(Monthly_Data, aes(x=Ideology, y=Total_Shares)) +
                 position=position_dodge(.9)) +
   scale_y_continuous(breaks=c(0,5,10,15,20),limits = c(-0.1,20)) +
   facet_wrap( ~ rating_our_score, ncol=2,scales = "free") +
-  ylab('Total Views (In Billions)\n') +
-  xlab('\nIdeology of User') +
+  ylab('Total Views (In Billions)') +
+  xlab('Ideology of User') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=10),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=10),
         title =element_text(size=14, face='bold'),
         legend.position = c(1, 0),
@@ -1366,16 +1366,16 @@ ggplot(Avg_F_10, aes(x=Numbers, y=Mean_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(0,20,40,60),limits = c(0,60)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
@@ -1436,16 +1436,16 @@ ggplot(Monthly_Data, aes(x=Numbers, y=Total_Shares, fill=Type)) +
   scale_x_continuous(breaks=c(1:6),
                      labels=c("18-24","25-34","35-44","45-54","55-64","65+")) +
   scale_y_continuous(breaks=c(20,40,60),limits = c(0,60)) +
-  ylab('Total Shares (In Millions)\n') +
-  xlab('\nAge Brackets') +
+  ylab('Total Shares (In Millions)') +
+  xlab('Age Brackets') +
   theme_bw() +
   theme(panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.title.x = element_text(size=14),
+        axis.title.x = element_text(size=14,margin = margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.x  = element_text(size=12),
-        axis.title.y = element_text(size=14),
+        axis.title.y = element_text(size=14,margin = margin(t = 0, r = 20, b = 0, l = 0)),
         axis.text.y  = element_text(size=12),
         title =element_text(size=14, face='bold'),
         legend.justification = c(1, 0),
