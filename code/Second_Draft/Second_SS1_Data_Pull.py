@@ -84,7 +84,7 @@ file_name_list = ["Second_NewsG_VIEWS_AGE_PPA_Jan_2018.tsv",
                         
 
 #Run loop that produces for every dataset we would like to pull for each month in 2018
-for i in range(0,13): 
+for i in range(0,11): 
     x = i + 1
     sql = f"""
 WITH aggregated_urlbds AS
